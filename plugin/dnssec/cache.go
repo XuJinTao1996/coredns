@@ -4,6 +4,7 @@ import (
 	"hash/fnv"
 	"io"
 	"strconv"
+	"strings"
 
 	"github.com/miekg/dns"
 )
@@ -14,7 +15,7 @@ func hash(rrs []dns.RR) uint64 {
 	// Only need this to be unique for ownername + qtype (+inet class), but we only care about IN.
 	// Its already an RRSet, so the ownername is the same and the qtype. Take the first one and construct
 	// the hash.
-	io.WriteString(h, rrs[0].Header().Name)
+	io.WriteString(h, strings.ToLower(rrs[0].Header().Name))
 	typ, ok := dns.TypeToString[rrs[0].Header().Rrtype]
 	if !ok {
 		typ = "TYPE" + strconv.FormatUint(uint64(rrs[0].Header().Rrtype), 10)
